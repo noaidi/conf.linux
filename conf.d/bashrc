@@ -36,7 +36,9 @@ fi
 # options
 # -------------------------------------------------------------------------
 export LANGUAGE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+if [ $(locale -a | grep en_US) ]; then
+	export LC_ALL=en_US.UTF-8
+fi
 export TZ='Asia/Seoul'
 umask 0022
 
