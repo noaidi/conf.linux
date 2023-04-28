@@ -14,4 +14,4 @@ for f in `ls .conf/conf.d`; do
 	echo $HOME/.$f
 done
 
-chmod 700 .conf/conf.d/ssh
+chmod 700 $HOME/.conf/conf.d/ssh
