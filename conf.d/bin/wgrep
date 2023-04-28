@@ -1,0 +1,91 @@
+#!/bin/bash
+
+# test gnu getopt
+# ------------------------------------------------------------------------------
+out=`getopt -T`
+if [ $? -ne 4 ] && [ -n "$out" ]; then
+	echo "gnu-getopt is not installed."
+	echo "try \`brew install gnu-getopt\`"
+	exit 1
+fi
+
+# usage
+# ------------------------------------------------------------------------------
+usage() {
+	echo "Usage: wgrep [OPTION]... <WORD> [WORD [WORD] ...]"
+	echo "Search for WORD in a directory"
+	echo "Example: wgrep -d ~/ hello world"
+	echo
+	echo "Options:"
+	echo "  -h           help message"
+	echo "  -D           debug mode"
+	echo "  -i           ignore case"
+	echo "  -c           no color"
+	echo "  -d DIR       search in DIR"
+	echo "  -f FILTER    file name filter"
+	exit 1
+}
+
+# options
+# ------------------------------------------------------------------------------
+DIR=.
+FINDOPT=
+DEBUG=n
+GREPOPT_IGNORE_CASE=n
+GREPOPT_COLOR=y
+set -- `getopt d:f:hicD $*`
+for i in $*; do
+	case "$i" in
+	-d) DIR="$2"; shift 2 ;;
+	-f)	[ -n "$FINDOPT" ] && FINDOPT="$FINDOPT -o "
+		FINDOPT="$FINDOPT-name '*$2*'"
+		shift 2 ;;
+	-i) GREPOPT_IGNORE_CASE=y; shift ;;
+	-c) GREPOPT_COLOR=n; shift ;;
+	-D) DEBUG=y; shift ;;
+	-h) usage shift ;;
+	esac
+done
+shift
+[ $# -eq 0 ] && usage
+
+# environment variables
+# ------------------------------------------------------------------------------
+GREP_OPTIONS="--binary-files=without-match --extended-regexp"
+[ "$GREPOPT_IGNORE_CASE" = y ] && GREP_OPTIONS="$GREP_OPTIONS --ignore-case"
+[ "$GREPOPT_COLOR" = y ] && GREP_OPTIONS="$GREP_OPTIONS --color=always"
+#export GREP_COLOR='1;37;41'
+export GREP_COLOR='1;33'
+GREP="grep $GREP_OPTIONS"
+
+# make expression
+# ------------------------------------------------------------------------------
+[ -n "$FINDOPT" ] && FINDOPT="-a \( $FINDOPT \)"
+
+ws=$1
+if [ $# -gt 1 ]; then
+	rest=`shift 1; echo $@ | sed 's/ /\n/g' | sort -u`
+	for w in $rest; do
+		ws="$ws|$w"
+	done
+	ws="($ws)"
+fi
+ws=${ws//\"/\\\"}
+
+exp="find -L ${DIR%*/} -type f $FINDOPT -print0 | \
+	$GREP --null --null-data --extended-regexp --invert-match \
+		'(\/\.[^\/]+|\/(node_modules|bundle)\/|\.min\.|ckeditor\.js|npm-lock\.|\/[^\/]+\.[my]+sql)' | \
+	xargs -0 -- $GREP --line-number \"$ws\""
+
+if [ $# -gt 1 ]; then
+	words=`echo $@ | sed 's/ /\n/g' | sort -u`
+	for w in $words; do
+		w=${w//\"/\\\"}
+		exp="$exp | $GREP \"[^:]+:[^0-9]+[0-9]+[^:]+:.*($w)\""
+	done
+fi
+
+# do
+# ------------------------------------------------------------------------------
+[ "$DEBUG" = y ] && echo $exp && exit 0
+eval $exp

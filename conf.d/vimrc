@@ -1,0 +1,75 @@
+" basic config
+" -------------------------------------------------------------------------
+set nocompatible	" Effect of making Vim either more Vi-compatible
+set nobackup		" Make a backup before overwiting a file
+set tabstop=4		" Number of spaces that a <Tab> in the file counts for.
+set backspace=2		" Allow backspace in insert mode
+set shiftwidth=4	" Number of spaces to use for each step of
+					" (auto)indent.
+set softtabstop=0	"
+set noexpandtab		"
+set autoindent		" Auto indent
+set smartindent		" Smart indent
+set nowrap
+set nowrapscan		" Searches wrap around the end of the file.
+set hlsearch		" When there is a previous search pattern,
+					" highlight all its matches.
+set novisualbell	" Visual bell
+set nojoinspaces	" Insert two spaces after a '.', '?' and '!'
+					" with a join command.
+set ruler			" Show the line and column number of the cursor
+					" position.
+set showcmd			" Show (partial) command in status line.
+set showmatch		" When a bracket is inserted,
+					" briefly jump to the matching one.
+set incsearch		" While typing a search command, show immediately.
+set title			" The title of the window will be set to the value of
+					" 'titlestring'
+set number			" Show line number.
+set relativenumber	" Relative line numbers
+set binary			" This option should be set before editing a binary
+					" file.
+set ignorecase		" The case of normal letters is ignored.
+set smartcase		" Override the 'ignorecase' option if the search
+					" pattern contains upper case characters.
+set mouse=n			" Enable the use of the mouse.
+					" n:Normal, v:Visual, i:Insert, c:Command, a:All
+set scrolloff=16
+set iskeyword=@,48-57,_,192-255
+
+" have syntax highlighting in terminals which can display colours:
+" -------------------------------------------------------------------------
+if has('syntax') && (&t_Co > 2)
+	syntax on
+	set background=dark
+	colo koehler
+endif
+
+" Only do this part when compiled with support for autocommands
+" -------------------------------------------------------------------------
+if has("autocmd")
+	" In text files, always limit the width of text to 75 characters
+	"au BufRead *.txt set tw=75
+
+	" When editing a file, always jump to the last cursor position
+	autocmd BufReadPost *
+	\ if line("'\"") > 0 && line ("'\"") <= line("$") |
+	\   exe "normal g'\"" |
+	\ endif
+endif
+
+" sass
+" -------------------------------------------------------------------------
+let g:www_production_auto = 1
+
+" html5
+" -------------------------------------------------------------------------
+let g:html5_event_handler_attributes_complete = 1
+let g:html5_rdfa_attributes_complete = 0
+let g:html5_microdata_attributes_complete = 0
+let g:html5_aria_attributes_complete = 1
+
+" configuration
+" -------------------------------------------------------------------------
+nnoremap <silent> <C-L> :call BufferList()<CR>
+nnoremap <silent> Q :call ToggEx_Explore()<CR>

@@ -1,0 +1,112 @@
+# source
+# -------------------------------------------------------------------------
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+if [ -f /etc/bash_completion ]; then
+	. /etc/bash_completion
+fi
+
+if [ -d ~/.bin ] ; then
+    PATH=~/.bin:$PATH
+fi
+
+if [ -d /home/.settings/admin ] ; then
+	PATH=$PATH:/home/.settings/admin
+fi
+
+# snap
+if [ -d /snap/bin ] ; then
+    PATH=/snap/bin:$PATH
+fi
+
+# go
+export GOPATH=~/.go
+if [ -d $GOROOT/bin ] ; then
+	PATH=$GOROOT/bin:$PATH
+fi
+
+# pnpm
+if [ -d $HOME/.local/share/pnpm ]; then
+	export PNPM_HOME="$HOME/.local/share/pnpm"
+	export PATH="$PNPM_HOME:$PATH"
+fi
+
+# options
+# -------------------------------------------------------------------------
+export LANGUAGE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export TZ='Asia/Seoul'
+umask 0022
+
+# don't put duplicate lines in the history. See bash(1) for more options
+export HISTCONTROL=ignoredups
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
+# color
+# -------------------------------------------------------------------------
+non='\[\033[0;0m\]'
+red='\[\033[1;31m\]'
+grn='\[\033[1;32m\]'
+ylw='\[\033[1;33m\]'
+cyn='\[\033[1;36m\]'
+
+# prompt
+# -------------------------------------------------------------------------
+PS1="$cyn[$ylw\u$cyn@$ylw\h$cyn:$grn\w$cyn]$red\$$non "
+
+# Define your own aliases here ...
+# -------------------------------------------------------------------------
+alias vi='vim -O'
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	#alias ls='ls --color=auto'
+	#alias dir='dir --color=auto'
+	#alias vdir='vdir --color=auto'
+	alias ls='ls -CF --color=tty --show-control-chars'
+fi
+
+alias l='ls -l'
+alias ll='ls -al'
+
+alias tart='tar tvzf'
+alias tarx='tar xvzf'
+alias tarc='tar cvfz'
+
+alias bzx='tar jxf'
+alias bzc='tar jcf'
+
+alias hg='history | grep'
+
+alias git-archive='git archive --format=tar master | bzip2 -z > ../`basename $(pwd)`-`date +%F-%H%M%S`.tar.bz2'
+
+# env
+# -------------------------------------------------------------------------
+export GREP_COLOR='1;33'
+alias grep='grep --binary-files=without-match --color=auto'
+alias frep='frep --binary-files=without-match --color=auto'
+alias erep='erep --binary-files=without-match --color=auto'
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		. /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		. /etc/bash_completion
+	fi
+fi

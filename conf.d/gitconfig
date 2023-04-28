@@ -1,0 +1,11 @@
+[user]
+	email = hello@deerstep.com
+	name = DEERSTEP
+[push]
+	default = matching
+[core]
+	editor = vim
+[merge]
+	tool = vimdiff
+[pull]
+	rebase = false
