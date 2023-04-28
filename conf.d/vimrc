@@ -10,7 +10,7 @@ set softtabstop=0	"
 set noexpandtab		"
 set autoindent		" Auto indent
 set smartindent		" Smart indent
-set nowrap
+set wrap
 set nowrapscan		" Searches wrap around the end of the file.
 set hlsearch		" When there is a previous search pattern,
 					" highlight all its matches.
