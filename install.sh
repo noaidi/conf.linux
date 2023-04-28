@@ -1,34 +1,17 @@
 #!/bin/bash
 
-# definitions
-# ------------------------------------------------------------------------------
-ROOT_DIR=.conf
-FILE_DIR=conf.d
-
-# check
-# ------------------------------------------------------------------------------
-CURR_DIR=$(pwd)
-cd ~
-HOME_DIR=$(pwd)
-if [ $CURR_DIR != $HOME_DIR/$ROOT_DIR ]; then
-	echo "ERROR: You must execute in ~/$ROOT_DIR/";
-	exit
+if [ ! -d $HOME/.conf ]; then
+	echo "Error: You must place in ~/.conf";
+	exit 1
 fi
 
-# symbolic linking
-# ------------------------------------------------------------------------------
-cd $HOME_DIR
-ITEM=$(ls $ROOT_DIR/$FILE_DIR)
-for CF in ${ITEM[*]}
-do
-	if [ -d $HOME_DIR/.$CF ]
-	then
-		rm -rf $HOME_DIR/.$CF
+cd $HOME
+for f in `ls .conf/conf.d`; do
+	if [ -d .$f ]; then
+		rm -rf .$f
 	fi
-	ln -sf $ROOT_DIR/$FILE_DIR/$CF .$CF
-	echo $HOME_DIR/.$CF
+	ln -sf .conf/conf.d/$f .$f
+	echo $HOME/.$f
 done
 
-# permission
-# ------------------------------------------------------------------------------
-chmod 700 $ROOT_DIR/$FILE_DIR/ssh
+chmod 700 .conf/conf.d/ssh
