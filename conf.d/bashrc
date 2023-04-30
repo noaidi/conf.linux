@@ -68,7 +68,7 @@ parse_git_branch() {
 	[ "$b" != "" ] && echo -en "\033[1;2m→\033[0;0m\033[1;35m$b"
 
 }
-PS1="$cyn[$ylw\u$cyn@$ylw\h$cyn:$grn\w\$(parse_git_branch)$cyn]$red\$$non "
+PS1="$cyn[$ylw\u$cyn@$ylw\h\$(parse_git_branch)$cyn:$grn\w$cyn]$red\$$non "
 
 # Define your own aliases here ...
 # -------------------------------------------------------------------------
