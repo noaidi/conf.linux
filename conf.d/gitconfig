@@ -5,6 +5,7 @@
 	default = matching
 [core]
 	editor = vim
+	pager = less -x1,5
 [merge]
 	tool = vimdiff
 [pull]
